@@ -59,4 +59,30 @@ public class CategoryServiceImpl implements CatergoryService {
         categoryMapper.update(category);
 
     }
+
+    @Override
+    public Category getById(long id) {
+        return categoryMapper.getById(id);
+    }
+
+    @Override
+    public void update(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryDTO,category);
+        category.setUpdateTime(LocalDateTime.now());
+        category.setUpdateUser(BaseContext.getCurrentId());
+        categoryMapper.update(category);
+    }
+
+    //删除菜品分类
+    @Override
+    public void delete(long id) {
+        categoryMapper.delete(id);
+    }
+
+    //根据菜品类型查询菜品分类
+    @Override
+    public List<Category> getByType(Integer type) {
+        return categoryMapper.getByType(type);
+    }
 }

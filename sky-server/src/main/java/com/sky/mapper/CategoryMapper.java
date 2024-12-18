@@ -3,8 +3,12 @@ package com.sky.mapper;
 import com.github.pagehelper.Page;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface CategoryMapper {
@@ -18,4 +22,14 @@ public interface CategoryMapper {
 
     //更新数据库数据
     void update(Category category);
+
+    @Select("select * from category where id=#{id}")
+    Category getById(long id);
+
+    //删除菜品分类
+    @Delete("delete from category where id=#{id}")
+    void delete(long id);
+
+    @Select("select * from category where type=#{type}")
+    List<Category> getByType(Integer type);
 }

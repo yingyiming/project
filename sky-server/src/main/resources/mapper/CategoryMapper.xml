@@ -32,11 +32,11 @@
             <if test="status != null">
                 status = #{status},
             </if>
-            <if test="update_time != null">
-                update_time = #{update_time},
+            <if test="updateTime != null">
+                update_time = #{updateTime},
             </if>
-            <if test="update_user != null">
-                update_user = #{update_user}
+            <if test="updateUser != null">
+                update_user = #{updateUser}
             </if>
         </set>
         where id = #{id}
