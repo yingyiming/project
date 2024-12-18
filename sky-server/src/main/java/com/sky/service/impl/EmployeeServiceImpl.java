@@ -66,6 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    //保存用户信息
     @Override
     public void save(EmployeeDTO employeeDTO) {
         Employee employee=new Employee();
@@ -91,6 +92,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.insert(employee);
     }
 
+
+    //分页查询
     @Override
     public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
         //开始分页查询
@@ -100,6 +103,42 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<Employee> records=page.getResult();
 
         return new PageResult(total,records);
+    }
+
+    //启用禁用员工账号
+    @Override
+    public void StartorStop(Integer status, Long id) {
+        //根据id更新数据库表的数据
+        /*Employee employee=new Employee();
+        employee.setStatus(status);
+        employee.setId(id);*/
+
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+
+        employeeMapper.update(employee);
+    }
+
+    //根据ID查询员工
+    @Override
+    public Employee getById(Long id) {
+        Employee employee=employeeMapper.getById(id);
+        employee.setPassword("********");
+        return employee;
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee=new Employee();
+        BeanUtils.copyProperties(employeeDTO,employee);
+
+        employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.update(employee);
     }
 
 }

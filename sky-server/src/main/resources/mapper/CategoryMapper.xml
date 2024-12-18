@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.CategoryMapper">
+    <select id="pageQuery" resultType="com.sky.entity.Category">
+        select * from category
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+           <if test="type != null">
+               and type = #{type}
+           </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <!--    在 MyBatis 的 XML 映射文件中，parameterType 属性用于指定传入 SQL 语句的参数类型。
+    这个属性告诉 MyBatis 在执行 SQL 语句时，应该将哪个类型的参数传递给 SQL 语句。-->
+    <update id="update" parameterType="Category">
+        update category
+        <set>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="update_time != null">
+                update_time = #{update_time},
+            </if>
+            <if test="update_user != null">
+                update_user = #{update_user}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>
