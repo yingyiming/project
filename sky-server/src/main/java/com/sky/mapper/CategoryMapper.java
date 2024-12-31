@@ -27,6 +27,7 @@ public interface CategoryMapper {
     @AutoFill(value = OperationType.UPDATE)
     void update(Category category);
 
+    //根据id查询菜品分类
     @Select("select * from category where id=#{id}")
     Category getById(long id);
 
@@ -34,6 +35,7 @@ public interface CategoryMapper {
     @Delete("delete from category where id=#{id}")
     void delete(long id);
 
+    //根据type查询菜品分类
     @Select("select * from category where type=#{type}")
     List<Category> getByType(Integer type);
 }

@@ -79,4 +79,49 @@ public class DishServiceImpl implements DishService {
         dishMapper.deleteByIds(ids);
         dishFlavorMapper.deleteByIds(ids);
     }
+
+    //根据ID查询菜品
+    @Override
+    public DishVO getById(Long id) {
+        ArrayList<DishFlavor> dishFlavors=dishFlavorMapper.selectByDishId(id);
+        Dish dish=dishMapper.selectById(id);
+        DishVO dishVO=new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+        dishVO.setCategoryName(dishMapper.getCategoryNameById(dish.getCategoryId()));
+        dishVO.setFlavors(dishFlavors);
+        return dishVO;
+    }
+
+    //启售和停售菜品
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        Dish dish=Dish.builder()
+                .id(id)
+                .status(status)
+                .build();
+        dishMapper.update(dish);
+    }
+
+    //修改菜品
+    @Override
+    public void updateWithFlavor(DishDTO dishDTO) {
+        //修改菜品表
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+
+        //修改菜品口味表
+        List<DishFlavor> dishFlavors=dishDTO.getFlavors();
+        List<Long> id=new ArrayList<>();
+        id.add(dishDTO.getId());
+        if(dishFlavors!=null&& !dishFlavors.isEmpty()){
+            dishFlavorMapper.deleteByIds(id);
+            dishFlavorMapper.insertList(dishFlavors);
+        }
+    }
+
+    @Override
+    public List<DishVO> list(Long categoryId) {
+        return dishMapper.getByCategoryId(categoryId);
+    }
 }

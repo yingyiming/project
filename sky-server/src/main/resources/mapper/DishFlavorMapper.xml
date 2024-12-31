@@ -9,6 +9,12 @@
             (#{flavor.dishId}, #{flavor.name}, #{flavor.value})
         </foreach>
     </insert>
+
+    <!--根据菜品id查询口味数据-->
+    <insert id="insert">
+
+    </insert>
+
     <delete id="deleteByIds">
         delete from dish_flavor
         where dish_id in
