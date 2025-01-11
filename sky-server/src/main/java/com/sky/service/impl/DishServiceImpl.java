@@ -124,4 +124,19 @@ public class DishServiceImpl implements DishService {
     public List<DishVO> list(Long categoryId) {
         return dishMapper.getByCategoryId(categoryId);
     }
+
+    //条件查询菜品和口味
+    @Override
+    public List<DishVO> listWithFlavor(Dish dish) {
+        List<DishVO> dishVOList = dishMapper.getByCategoryId(dish.getCategoryId());
+        //查询菜品口味
+        for (DishVO d : dishVOList) {
+            //根据菜品id查询对应的口味
+            List<DishFlavor> flavors = dishFlavorMapper.selectByDishId(d.getId());
+            d.setFlavors(flavors);
+        }
+
+        return dishVOList;
+
+    }
 }

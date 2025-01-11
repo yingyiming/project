@@ -36,6 +36,6 @@ public interface CategoryMapper {
     void delete(long id);
 
     //根据type查询菜品分类
-    @Select("select * from category where type=#{type}")
+
     List<Category> getByType(Integer type);
 }

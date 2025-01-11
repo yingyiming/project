@@ -11,10 +11,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 //菜品管理
 @RestController
@@ -24,6 +26,8 @@ import java.util.List;
 public class DishController {
     @Autowired
     private DishService dishService;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     //新增菜品
     @ApiOperation("新增菜品")
@@ -31,6 +35,11 @@ public class DishController {
     public Result save(@RequestBody DishDTO dishDTO){
         log.info("新增菜品，菜品信息：{}",dishDTO);
         dishService.saveWithFlavor(dishDTO);
+
+        //清理缓存
+        String key= "dish_*"+dishDTO.getCategoryId();
+        cleanCache(key);
+
         return Result.success();
     }
 
@@ -49,6 +58,7 @@ public class DishController {
     public Result delete(@RequestParam List<Long> ids){
         log.info("删除菜品，菜品id：{}",ids);
         dishService.delete(ids);
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -59,6 +69,7 @@ public class DishController {
     public Result<DishVO> getById(@PathVariable Long id){
         log.info("根据ID查询菜品:{}",id);
         DishVO dish = dishService.getById(id);
+        cleanCache("dish_*");
         return Result.success(dish);
     }
 
@@ -67,6 +78,9 @@ public class DishController {
     public Result startOrStop(@PathVariable Integer status,long id){
         log.info("启售和停售菜品：{}",status);
         dishService.startOrStop(status,id);
+
+        cleanCache("dish_*");
+
         return Result.success();
     }
 
@@ -76,6 +90,7 @@ public class DishController {
     public Result update(@RequestBody DishDTO dishDTO){
         log.info("修改菜品，菜品信息：{}",dishDTO);
         dishService.updateWithFlavor(dishDTO);
+        cleanCache("dish_*");
         return Result.success();
     }
 
@@ -86,5 +101,10 @@ public class DishController {
         log.info("根据分类ID查询菜品:{}",categoryId);
         List<DishVO> dishVOList = dishService.list(categoryId);
         return Result.success(dishVOList);
+    }
+
+    private void cleanCache(String pattern) {
+        Set keys= redisTemplate.keys(pattern);
+        redisTemplate.delete(keys);
     }
 }

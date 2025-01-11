@@ -18,6 +18,7 @@ public interface DishFlavorMapper {
 
     void deleteByIds(List<Long> ids);
 
+    //根据菜品id查询口味数据
     @Select("select * from dish_flavor where dish_id = #{id}")
     ArrayList<DishFlavor> selectByDishId(Long id);
 
